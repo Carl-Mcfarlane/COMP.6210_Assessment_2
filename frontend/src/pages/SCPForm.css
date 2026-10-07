@@ -1,0 +1,197 @@
+/* Reading-width column, matching the detail page's layout */
+.scp-form-page {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 88px 16px 64px;
+  text-align: left;
+}
+
+.scp-form-page .scp-form__status {
+  padding: 32px 0;
+  color: var(--text);
+}
+
+/* Login/Signup are short 2-field forms, not the long reading-width layout
+   above (that's sized for the SCP edit form's textareas) - a fixed, narrower
+   width keeps both auth pages the same size regardless of title/button text */
+.scp-form-page--auth {
+  max-width: 400px;
+}
+
+/* Login/Signup branding - the main form pages use DetailHeader instead */
+.scp-form-page__logo-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.scp-form-page__logo {
+  height: 40px;
+  /* same light/dark invert trick as the catalogue/header logo */
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .scp-form-page__logo {
+    filter: none;
+  }
+}
+
+/* Card-like wrapper, matching .scp-detail__folder */
+.scp-form {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+  padding: 24px 24px 32px;
+}
+
+.scp-form__kicker {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+.scp-form__title {
+  font-family: var(--mono);
+  font-size: 2rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px;
+}
+
+.scp-form__field {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.scp-form__field span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.scp-form__field input,
+.scp-form__field select,
+.scp-form__field textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-family: var(--sans);
+  color: var(--text-h);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.scp-form__field textarea {
+  min-height: unset;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.scp-form__field input[type='file'] {
+  min-height: unset;
+  padding: 8px;
+  background: transparent;
+}
+
+.scp-form__image-preview {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+
+.scp-form__field input:focus-visible,
+.scp-form__field select:focus-visible,
+.scp-form__field textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.scp-form__error {
+  color: var(--class-keter);
+  font-size: 0.95rem;
+  margin: 0 0 18px;
+}
+
+.scp-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.scp-form__cancel {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.scp-form__cancel:hover,
+.scp-form__cancel:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+.scp-form__submit {
+  min-height: 44px;
+  padding: 0 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.scp-form__submit:hover,
+.scp-form__submit:focus-visible {
+  filter: brightness(1.1);
+  outline: none;
+}
+
+.scp-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .scp-form {
+    padding: 16px 16px 24px;
+  }
+
+  .scp-form__title {
+    font-size: 1.6rem;
+  }
+}

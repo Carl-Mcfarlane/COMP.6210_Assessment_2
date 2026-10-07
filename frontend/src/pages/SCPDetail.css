@@ -1,0 +1,293 @@
+/* Reading-width column for the report body; top padding clears the fixed header */
+.scp-detail {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 88px 16px 64px;
+  text-align: left;
+}
+
+/* Link back to the catalogue, above the report card */
+.scp-detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 14px;
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-h);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.scp-detail__back:hover,
+.scp-detail__back:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  outline: none;
+}
+
+/* Card-like "folder" containing the report; top border colour is set
+   per object class below, matching the badge/card class colours elsewhere */
+.scp-detail__folder {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+  padding: 24px 24px 32px;
+}
+
+.scp-detail__folder[data-class='safe'] {
+  border-top-color: var(--class-safe);
+}
+
+.scp-detail__folder[data-class='euclid'] {
+  border-top-color: var(--class-euclid);
+}
+
+.scp-detail__folder[data-class='keter'] {
+  border-top-color: var(--class-keter);
+}
+
+/* Small "Item #:" label above the SCP id */
+.scp-detail__kicker {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+/* Row holding the SCP id next to its object class badge */
+.scp-detail__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.scp-detail__id {
+  font-family: var(--mono);
+  font-size: 2rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Edit/Delete buttons, grouped and pushed to the right of the header row */
+.scp-detail__edit {
+  margin-left: auto;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-h);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.scp-detail__edit:hover,
+.scp-detail__edit:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  outline: none;
+}
+
+.scp-detail__delete {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--class-keter);
+  background: transparent;
+  border: 1px solid var(--class-keter);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.scp-detail__delete:hover,
+.scp-detail__delete:focus-visible {
+  color: #fff;
+  background: var(--class-keter);
+  outline: none;
+}
+
+.scp-detail__delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scp-detail__delete-error {
+  color: var(--class-keter);
+  font-size: 0.9rem;
+  margin: -8px 0 20px;
+}
+
+/* Main SCP photo/illustration at the top of the report */
+.scp-detail__image {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+/* One report section (e.g. "Special Containment Procedures", "Description") */
+.scp-detail__section {
+  margin-bottom: 28px;
+}
+
+.scp-detail__section h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-h);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.scp-detail__section p,
+.scp-detail__collapsible-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.scp-detail__section p:last-child,
+.scp-detail__collapsible-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Chronological history/incident log list */
+.scp-detail__history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.scp-detail__history li {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.scp-detail__history li:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.scp-detail__history li:last-child {
+  padding-bottom: 0;
+}
+
+.scp-detail__history-date {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-h);
+  margin-bottom: 4px;
+}
+
+.scp-detail__history p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Censor-bar effect for redacted text: text colour matches the background
+   so the characters are still in the DOM (for accessibility/copy-paste)
+   but visually blacked out */
+.redacted {
+  background: #0a0a0a;
+  color: #0a0a0a;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Expandable <details> block used for addenda/interview logs etc */
+.scp-detail__collapsible {
+  border-top: 1px solid var(--border);
+}
+
+.scp-detail__collapsible:last-of-type {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Clickable header row of a collapsible block */
+.scp-detail__collapsible summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+/* Hide the browser's default disclosure triangle in favour of the
+   custom +/- indicator built below */
+.scp-detail__collapsible summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Custom "+" expand indicator, right-aligned in the summary row */
+.scp-detail__collapsible summary::after {
+  content: '+';
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Swap to a "-" once the <details> element is open */
+.scp-detail__collapsible[open] summary::after {
+  content: '\2212';
+}
+
+.scp-detail__collapsible summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.scp-detail__collapsible-content {
+  padding-bottom: 14px;
+}
+
+/* Shrink the id text and folder padding to fit smaller phone screens */
+@media (max-width: 480px) {
+  .scp-detail__id {
+    font-size: 1.6rem;
+  }
+
+  .scp-detail__folder {
+    padding: 16px 16px 24px;
+  }
+}

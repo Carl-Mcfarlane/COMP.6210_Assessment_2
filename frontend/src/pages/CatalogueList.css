@@ -1,0 +1,289 @@
+/* Page wrapper for the catalogue/search list - relative so the sign-out
+   button can anchor to its top-right corner */
+.catalogue {
+  position: relative;
+  padding: 24px 16px 48px;
+  text-align: left;
+}
+
+.catalogue__title {
+  text-align: center;
+  line-height: 1.15;
+  margin: 0 0 24px;
+}
+
+/* Logo above the search bar; same light/dark invert trick as the header logo */
+.catalogue__logo {
+  display: block;
+  width: 140px;
+  height: auto;
+  margin: 0 auto;
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .catalogue__logo {
+    filter: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalogue__logo {
+    width: 96px;
+  }
+}
+
+/* Positioning context for the search icon overlaid on the input */
+.catalogue__search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 20px;
+}
+
+/* Magnifying-glass icon, absolutely placed inside the search input */
+.catalogue__search-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.catalogue__search {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 14px 10px 40px;
+  font-size: 16px;
+  font-family: var(--sans);
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.catalogue__search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Row above the grid holding the "+ New Entry" link */
+.catalogue__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 960px;
+  margin: 0 auto 16px;
+}
+
+/* Floats top-right of the page, in line with the logo row - the catalogue
+   page doesn't share DetailHeader's nav bar, so this is its own equivalent */
+.catalogue__sign-out {
+  position: absolute;
+  top: 24px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-h);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.catalogue__sign-out:hover,
+.catalogue__sign-out:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  outline: none;
+}
+
+.catalogue__new {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.catalogue__new:hover,
+.catalogue__new:focus-visible {
+  filter: brightness(1.1);
+  outline: none;
+}
+
+/* Shown in place of the grid when a search has no matches */
+.catalogue__empty {
+  padding: 32px 0;
+  color: var(--text);
+}
+
+/* Responsive card grid: 1 column on mobile, scaling up to 4 on wide screens */
+.catalogue__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .catalogue__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .catalogue__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .catalogue__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Individual SCP card link; left border colour is set per object class below */
+.scp-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.scp-card[data-class='safe'] {
+  border-left-color: var(--class-safe);
+}
+
+.scp-card[data-class='euclid'] {
+  border-left-color: var(--class-euclid);
+}
+
+.scp-card[data-class='keter'] {
+  border-left-color: var(--class-keter);
+}
+
+/* Default hover/focus state: lift the card and tint the other three
+   borders to match the accent colour; overridden per class below so the
+   glow matches that object's class colour instead */
+.scp-card:hover,
+.scp-card:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-top-color: var(--accent-border);
+  border-right-color: var(--accent-border);
+  border-bottom-color: var(--accent-border);
+  outline: none;
+}
+
+.scp-card[data-class='safe']:hover,
+.scp-card[data-class='safe']:focus-visible {
+  border-top-color: var(--class-safe);
+  border-right-color: var(--class-safe);
+  border-bottom-color: var(--class-safe);
+  box-shadow:
+    0 0 16px -4px var(--class-safe),
+    var(--shadow);
+}
+
+.scp-card[data-class='euclid']:hover,
+.scp-card[data-class='euclid']:focus-visible {
+  border-top-color: var(--class-euclid);
+  border-right-color: var(--class-euclid);
+  border-bottom-color: var(--class-euclid);
+  box-shadow:
+    0 0 16px -4px var(--class-euclid),
+    var(--shadow);
+}
+
+.scp-card[data-class='keter']:hover,
+.scp-card[data-class='keter']:focus-visible {
+  border-top-color: var(--class-keter);
+  border-right-color: var(--class-keter);
+  border-bottom-color: var(--class-keter);
+  box-shadow:
+    0 0 16px -4px var(--class-keter),
+    var(--shadow);
+}
+
+/* Fixed 4:3 image area at the top of the card */
+.scp-card__thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--code-bg);
+  color: var(--text);
+}
+
+/* the image is positioned absolute instead of just width/height 100% -
+   with some photo aspect ratios (near-square ones especially) percentage
+   height on a flex child doesn't resolve against the aspect-ratio box
+   properly and the card grows taller than the others */
+.scp-card__thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fallback icon shown centred over the thumb when an entry has no image */
+.scp-card__placeholder {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 40%;
+  height: 40%;
+}
+
+/* Loading skeleton overlaid on the thumb while the image loads */
+.scp-card__thumb-skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+}
+
+/* Row below the thumbnail holding the SCP id (and object class badge) */
+.scp-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.scp-card__id {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text-h);
+}

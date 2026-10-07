@@ -1,0 +1,31 @@
+/* Loading placeholder block: a light/dark gradient band that sweeps
+   across the element to read as a "shimmer" while content is fetched */
+.skeleton {
+  display: block;
+  background: linear-gradient(
+    90deg,
+    var(--code-bg) 25%,
+    var(--border) 37%,
+    var(--code-bg) 63%
+  );
+  background-size: 400% 100%;
+  border-radius: 4px;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+
+/* Slides the oversized gradient background left-to-right to fake movement */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Respect the user's OS-level motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

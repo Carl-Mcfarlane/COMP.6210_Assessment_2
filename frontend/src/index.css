@@ -1,3 +1,5 @@
+/* Design tokens (colours, fonts, shadow) and base page defaults for light
+   mode - overridden for dark mode further down */
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -12,8 +14,15 @@
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: var(--mono);
   --mono: ui-monospace, Consolas, monospace;
+
+  --class-safe: #16a34a;
+  --class-safe-bg: rgba(34, 197, 94, 0.15);
+  --class-euclid: #b45309;
+  --class-euclid-bg: rgba(234, 179, 8, 0.18);
+  --class-keter: #dc2626;
+  --class-keter-bg: rgba(239, 68, 68, 0.15);
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -30,6 +39,8 @@
   }
 }
 
+/* Same tokens re-pointed at a dark palette, plus a filter tweak so the
+   social icons (built for a light background) still read on dark */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -43,6 +54,13 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+    --class-safe: #4ade80;
+    --class-safe-bg: rgba(34, 197, 94, 0.2);
+    --class-euclid: #facc15;
+    --class-euclid-bg: rgba(234, 179, 8, 0.22);
+    --class-keter: #f87171;
+    --class-keter-bg: rgba(239, 68, 68, 0.22);
   }
 
   #social .button-icon {
@@ -54,6 +72,8 @@ body {
   margin: 0;
 }
 
+/* Centred content column with vertical borders; flex column so the
+   footer can be pushed to the bottom via margin-top: auto */
 #root {
   width: 1126px;
   max-width: 100%;
@@ -95,6 +115,7 @@ p {
   margin: 0;
 }
 
+/* Shared mono styling for inline code and the little counter chip */
 code,
 .counter {
   font-family: var(--mono);
@@ -108,4 +129,11 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* chrome/safari add their own little x to clear a search input once you
+   type something, which just doubles up with our own clear/close buttons */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  appearance: none;
 }

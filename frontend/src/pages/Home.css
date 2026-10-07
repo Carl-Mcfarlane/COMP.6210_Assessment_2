@@ -1,0 +1,191 @@
+.home {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* #root caps out at 1126px wide, but the hero image should go edge to
+     edge, so break out of that with the usual negative margin trick */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  /* fill whatever space #root has left instead of a fixed vh, otherwise
+     there's a gap of plain background below the image on tall screens */
+  flex: 1;
+  min-height: 80vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Dark scrim over the hero image so the white text stays readable */
+.home__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Signed-in indicator, top-right of the hero - Home has no DetailHeader of
+   its own to carry this, so it gets its own small corner control */
+.home__account {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(244, 244, 245, 0.25);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.home__email {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #f4f4f5;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home__sign-out {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f4f4f5;
+  background: transparent;
+  border: 1px solid rgba(244, 244, 245, 0.4);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.home__sign-out:hover,
+.home__sign-out:focus-visible {
+  background: rgba(244, 244, 245, 0.12);
+  outline: none;
+}
+
+@media (max-width: 480px) {
+  .home__email {
+    display: none;
+  }
+}
+
+/* Centred hero copy, sits above the overlay */
+.home__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.home__logo {
+  width: 160px;
+  height: auto;
+}
+
+/* Small uppercase label above the hero title */
+.home__kicker {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0;
+}
+
+.home__title {
+  line-height: 1.15;
+  color: #f4f4f5;
+  margin: 0;
+}
+
+.home__lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d4d4d8;
+  margin: 0;
+}
+
+/* "X entries catalogued" style live count under the lead text */
+.home__count {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #d4d4d8;
+  margin: 0;
+}
+
+/* "Browse the catalogue" call-to-action button */
+.home__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 28px;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bg);
+  background: var(--accent);
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.home__cta:hover,
+.home__cta:focus-visible {
+  filter: brightness(1.08);
+  outline: none;
+}
+
+/* Signed-out visitors get Sign In + Create Account side by side instead
+   of a single "Browse Catalogue" button */
+.home__auth-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.home__auth-links .home__cta {
+  margin-top: 0;
+}
+
+.home__cta--secondary {
+  color: #f4f4f5;
+  background: transparent;
+  border: 1px solid #f4f4f5;
+}
+
+/* Shrink the hero and its contents to fit smaller phone screens */
+@media (max-width: 480px) {
+  .home {
+    min-height: 70vh;
+  }
+
+  .home__content {
+    padding: 32px 20px;
+  }
+
+  .home__logo {
+    width: 120px;
+  }
+}

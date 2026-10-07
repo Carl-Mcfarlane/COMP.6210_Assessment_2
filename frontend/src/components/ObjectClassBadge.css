@@ -1,0 +1,35 @@
+/* Base pill shape; colour defaults to --accent and is overridden below
+   per object class via the data-class attribute set on the element */
+.object-class-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1.5px solid currentColor;
+  background: var(--accent-bg);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* Safe-class colour scheme */
+.object-class-badge[data-class='safe'] {
+  background: var(--class-safe-bg);
+  color: var(--class-safe);
+}
+
+/* Euclid-class colour scheme */
+.object-class-badge[data-class='euclid'] {
+  background: var(--class-euclid-bg);
+  color: var(--class-euclid);
+}
+
+/* Keter-class colour scheme */
+.object-class-badge[data-class='keter'] {
+  background: var(--class-keter-bg);
+  color: var(--class-keter);
+}

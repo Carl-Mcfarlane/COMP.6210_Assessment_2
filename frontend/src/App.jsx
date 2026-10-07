@@ -1,43 +1,64 @@
-import { useState, useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom'
+import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
+import Signup from './pages/Signup.jsx'
+import CatalogueList from './pages/CatalogueList.jsx'
+import SCPDetail from './pages/SCPDetail.jsx'
+import SCPForm from './pages/SCPForm.jsx'
+import NotFound from './pages/NotFound.jsx'
+import Footer from './components/Footer.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 function App() {
-  const [subjects, setSubjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/subjects')
-      .then((res) => res.json())
-      .then((data) => {
-        setSubjects(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
-  // ← useEffect fully closes here with that }, []);
-
-  // ↓ THIS is what goes next — after useEffect, still inside App()
-  if (loading) return <p>Loading subjects...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // the home page is a full-bleed hero, so the footer only shows up once
+  // you're past it, on catalogue/detail/not-found
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
 
   return (
-    <div className="App">
-      <h1>SCP Database</h1>
-      <div className="subject-list">
-        {subjects.map((subject) => (
-          <div key={subject.id} className="subject-card">
-            <h2>{subject.item}</h2>
-            <p><strong>Class:</strong> {subject.class}</p>
-            <p><strong>Description:</strong> {subject.description}</p>
-            <p><strong>Containment:</strong> {subject.containment}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/catalogue"
+          element={(
+            <ProtectedRoute>
+              <CatalogueList />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/scp/new"
+          element={(
+            <ProtectedRoute adminOnly>
+              <SCPForm />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/scp/:id/edit"
+          element={(
+            <ProtectedRoute adminOnly>
+              <SCPForm />
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/scp/:id"
+          element={(
+            <ProtectedRoute>
+              <SCPDetail />
+            </ProtectedRoute>
+          )}
+        />
+        {/* catches anything that doesn't match one of the routes above */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {!isHome && <Footer />}
+    </>
+  )
 }
 
-export default App;
+export default App
