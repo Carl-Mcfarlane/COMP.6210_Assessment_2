@@ -16,6 +16,7 @@
    width keeps both auth pages the same size regardless of title/button text */
 .scp-form-page--auth {
   max-width: 400px;
+  min-width: 400px;
 }
 
 /* Login/Signup branding - the main form pages use DetailHeader instead */
