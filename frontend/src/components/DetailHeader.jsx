@@ -70,6 +70,10 @@ function DetailHeader() {
   const inputRef = useRef(null)
 
   async function handleSignOut() {
+    // drop focus first - otherwise the search input's caret visibly jumps
+    // toward the logo for a frame as the sign-out button's removal shifts
+    // the right-aligned header group left, right before navigating away
+    inputRef.current?.blur()
     await signOut()
     navigate('/')
   }
