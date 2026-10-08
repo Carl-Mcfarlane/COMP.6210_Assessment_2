@@ -257,13 +257,10 @@
   object-fit: cover;
 }
 
-/* Fallback icon shown centred over the thumb when an entry has no image */
+/* Redacted stamp shown filling the thumb when an entry has no image */
 .scp-card__placeholder {
   position: absolute;
   inset: 0;
-  margin: auto;
-  width: 40%;
-  height: 40%;
 }
 
 /* Loading skeleton overlaid on the thumb while the image loads */

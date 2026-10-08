@@ -7,6 +7,7 @@ import { getObjectClassKey } from '../utils/objectClassBadge.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import ObjectClassBadge from '../components/ObjectClassBadge.jsx'
 import Skeleton from '../components/Skeleton.jsx'
+import RedactedPlaceholder from '../components/RedactedPlaceholder.jsx'
 import logo from '../assets/images/SCP_Foundation_Logo_White.png'
 import './CatalogueList.css'
 
@@ -25,43 +26,6 @@ function CardSkeleton() {
         <Skeleton style={{ width: '64px', height: '22px' }} />
       </div>
     </div>
-  )
-}
-
-// generic image icon for entries that don't have a photo yet
-function PlaceholderIcon() {
-  return (
-    <svg
-      className="scp-card__placeholder"
-      viewBox="0 0 24 24"
-      role="presentation"
-      aria-hidden="true"
-    >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"
-      />
-      <circle
-        cx="9"
-        cy="10"
-        r="1.75"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m5 17 4.5-4.5a1.5 1.5 0 0 1 2.12 0L15 16m-1.5-1.5 1.29-1.29a1.5 1.5 0 0 1 2.12 0L19 15.5"
-      />
-    </svg>
   )
 }
 
@@ -158,7 +122,7 @@ function CatalogueList() {
                   {entry.image ? (
                     <img src={entry.image} alt="" loading="lazy" />
                   ) : (
-                    <PlaceholderIcon />
+                    <RedactedPlaceholder className="scp-card__placeholder" />
                   )}
                 </div>
                 <div className="scp-card__body">

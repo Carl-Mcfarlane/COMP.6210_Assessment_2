@@ -155,6 +155,12 @@
   margin-bottom: 24px;
 }
 
+/* the placeholder has no intrinsic size like a real <img> would, so it needs
+   an explicit height to show up at all */
+.scp-detail__image--placeholder {
+  height: 220px;
+}
+
 /* One report section (e.g. "Special Containment Procedures", "Description") */
 .scp-detail__section {
   margin-bottom: 28px;

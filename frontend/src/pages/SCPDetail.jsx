@@ -9,6 +9,7 @@ import ObjectClassBadge from '../components/ObjectClassBadge.jsx'
 import Skeleton from '../components/Skeleton.jsx'
 import NotFoundMessage from '../components/NotFoundMessage.jsx'
 import DetailHeader from '../components/DetailHeader.jsx'
+import RedactedPlaceholder from '../components/RedactedPlaceholder.jsx'
 import './SCPDetail.css'
 
 // containment procedures / description / reference are all just arrays of
@@ -161,8 +162,10 @@ function SCPDetail() {
           </p>
         )}
 
-        {entry.image && (
+        {entry.image ? (
           <img className="scp-detail__image" src={entry.image} alt={entry.id} />
+        ) : (
+          <RedactedPlaceholder className="scp-detail__image scp-detail__image--placeholder" />
         )}
 
         <TextSection

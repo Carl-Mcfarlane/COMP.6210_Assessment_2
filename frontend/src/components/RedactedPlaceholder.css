@@ -1,0 +1,22 @@
+.redacted-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #0a0a0a;
+}
+
+.redacted-placeholder__stamp {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  color: var(--class-keter);
+  border: 2px solid var(--class-keter);
+  padding: 6px 14px;
+  transform: rotate(-8deg);
+  text-transform: uppercase;
+  opacity: 0.85;
+  user-select: none;
+}
