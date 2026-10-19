@@ -15,8 +15,19 @@ const app = express();
 if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY));
 app.use(helmet());
 // comma-separated list of allowed frontend origins; unset means allow any (local dev)
-const allowedOrigins = process.env.CORS_ORIGIN?.split(',').map((origin) => origin.trim());
-app.use(cors(allowedOrigins ? { origin: allowedOrigins } : undefined));
+// each entry is reduced to its bare origin, so stray quotes, a trailing slash or
+// a pasted path (https://site.app/catalogue) still match what browsers send
+function toOrigin(value) {
+  try {
+    return new URL(value.trim().replace(/^["']|["']$/g, '')).origin;
+  } catch {
+    return null;
+  }
+}
+
+const allowedOrigins = process.env.CORS_ORIGIN?.split(',').map(toOrigin).filter(Boolean);
+if (process.env.CORS_ORIGIN) console.log('CORS allowed origins:', allowedOrigins);
+app.use(cors(allowedOrigins?.length ? { origin: allowedOrigins } : undefined));
 app.use(express.json({ limit: '1mb' }));
 app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false }));
 
