@@ -187,8 +187,8 @@ function DetailHeader() {
             {isMobileSearchOpen ? <CloseIcon /> : <SearchIcon />}
           </button>
 
-          {user && (
-            <div className="detail-header__account">
+          <div className="detail-header__account">
+            {user ? (
               <button
                 type="button"
                 className="detail-header__sign-out"
@@ -196,8 +196,12 @@ function DetailHeader() {
               >
                 Sign Out
               </button>
-            </div>
-          )}
+            ) : (
+              <Link to="/login" className="detail-header__sign-out">
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

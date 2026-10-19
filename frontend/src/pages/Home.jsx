@@ -36,8 +36,6 @@ function Home() {
           A restricted-access catalogue of anomalous items, entities, and
           phenomena currently held in Foundation containment.
         </p>
-        {/* entries can't be fetched without signing in, so this just hides
-            for a signed-out visitor instead of showing an error */}
         {!loading && !error && (
           <p className="home__count">{entries.length} entries on file</p>
         )}
@@ -47,7 +45,10 @@ function Home() {
           </Link>
         ) : (
           <div className="home__auth-links">
-            <Link to="/login" className="home__cta">
+            <Link to="/catalogue" className="home__cta">
+              Browse Catalogue
+            </Link>
+            <Link to="/login" className="home__cta home__cta--secondary">
               Sign In
             </Link>
             <Link to="/signup" className="home__cta home__cta--secondary">

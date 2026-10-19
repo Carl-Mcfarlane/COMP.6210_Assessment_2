@@ -21,18 +21,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/catalogue"
-          element={(
-            <ProtectedRoute>
-              <CatalogueList />
-            </ProtectedRoute>
-          )}
-        />
+        {/* browsing is public; only creating/editing needs an account */}
+        <Route path="/catalogue" element={<CatalogueList />} />
         <Route
           path="/scp/new"
           element={(
-            <ProtectedRoute adminOnly>
+            <ProtectedRoute>
               <SCPForm />
             </ProtectedRoute>
           )}
@@ -40,19 +34,12 @@ function App() {
         <Route
           path="/scp/:id/edit"
           element={(
-            <ProtectedRoute adminOnly>
+            <ProtectedRoute>
               <SCPForm />
             </ProtectedRoute>
           )}
         />
-        <Route
-          path="/scp/:id"
-          element={(
-            <ProtectedRoute>
-              <SCPDetail />
-            </ProtectedRoute>
-          )}
-        />
+        <Route path="/scp/:id" element={<SCPDetail />} />
         {/* catches anything that doesn't match one of the routes above */}
         <Route path="*" element={<NotFound />} />
       </Routes>

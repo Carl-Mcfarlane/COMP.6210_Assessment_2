@@ -33,7 +33,7 @@ function CardSkeleton() {
 function CatalogueList() {
   useDocumentTitle('SCP Catalogue')
   const { entries, loading } = useScpEntries()
-  const { role, signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const [searchParams] = useSearchParams()
   // if you search from the detail page it lands here as /catalogue?q=...,
   // so read that in as the starting value
@@ -46,9 +46,15 @@ function CatalogueList() {
 
   return (
     <section className="catalogue">
-      <button type="button" className="catalogue__sign-out" onClick={signOut}>
-        Sign Out
-      </button>
+      {user ? (
+        <button type="button" className="catalogue__sign-out" onClick={signOut}>
+          Sign Out
+        </button>
+      ) : (
+        <Link to="/login" className="catalogue__sign-out">
+          Sign In
+        </Link>
+      )}
 
       <h1 className="catalogue__title">
         <img
@@ -92,7 +98,7 @@ function CatalogueList() {
         />
       </div>
 
-      {role === 'admin' && (
+      {user && (
         <div className="catalogue__toolbar">
           <Link to="/scp/new" className="catalogue__new">
             + New Entry

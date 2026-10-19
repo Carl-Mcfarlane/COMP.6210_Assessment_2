@@ -2,7 +2,8 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 
 // gates a route behind a signed-in session, and optionally behind the
-// admin role too - used to wrap /catalogue, /scp/:id, /scp/new, /scp/:id/edit
+// admin role too - used to wrap /scp/new and /scp/:id/edit (per-entry
+// ownership is checked by the page and enforced again by the API)
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, role, loading } = useAuth()
   const location = useLocation()

@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const supabase = require('./supabaseClient');
-const { authenticate, requireAdmin } = require('./middleware/auth');
+const { authenticate, optionalAuthenticate, canModify } = require('./middleware/auth');
 const { validateIdParam, validateSubjectBody } = require('./middleware/validate');
 
 const app = express();
@@ -49,15 +49,35 @@ const upload = multer({
   },
 });
 
-const SUBJECT_SELECT = 'id, item, description, image, created_at, object_classes(id, name, description), containment_procedures(id, procedure_text, updated_at), incident_logs(id, log_date, entry_text, sort_order), appendices(id, heading, body, sort_order)';
+const SUBJECT_SELECT = 'id, item, description, image, created_at, created_by, object_classes(id, name, description), containment_procedures(id, procedure_text, updated_at), incident_logs(id, log_date, entry_text, sort_order), appendices(id, heading, body, sort_order)';
 
 const IMAGE_BUCKET = 'SCP_IMGS';
 
-// DB stores just the filename within the bucket; expand it to a public URL for the frontend
-function withImageUrl(subject) {
-  if (!subject?.image) return subject;
+// shapes a subject for the client: the DB stores just the filename within the
+// bucket so expand it to a public URL, and swap the owner's id for a can_edit
+// flag so user ids aren't exposed to anonymous visitors
+function present(subject, user) {
+  const { created_by, ...rest } = subject;
+  const result = { ...rest, can_edit: canModify(user, { created_by }) };
+  if (!subject.image) return result;
   const { data } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(subject.image);
-  return { ...subject, image: data.publicUrl };
+  return { ...result, image: data.publicUrl };
+}
+
+// runs after authenticate on routes that change an existing subject: only the
+// subject's creator or an admin may continue
+async function requireOwnerOrAdmin(req, res, next) {
+  const { data: subject, error } = await supabase
+    .from('subjects')
+    .select('created_by')
+    .eq('id', req.params.id)
+    .maybeSingle();
+  if (error) return sendDbError(res, error);
+  if (!subject) return res.status(404).json({ error: 'Subject not found' });
+  if (!canModify(req.user, subject)) {
+    return res.status(403).json({ error: 'You can only change entries you created' });
+  }
+  next();
 }
 
 // log the real database error server-side but only send the client a generic
@@ -82,22 +102,22 @@ async function getObjectClassId(className) {
   return { id: data.id };
 }
 
-// GET all subjects
-app.get('/api/subjects', authenticate, async (req, res) => {
+// GET all subjects (public)
+app.get('/api/subjects', optionalAuthenticate, async (req, res) => {
   const { data, error } = await supabase.from('subjects').select(SUBJECT_SELECT).order('item');
   if (error) return sendDbError(res, error);
-  res.json(data.map(withImageUrl));
+  res.json(data.map((subject) => present(subject, req.user)));
 });
 
-// GET one subject
-app.get('/api/subjects/:id', authenticate, validateIdParam, async (req, res) => {
+// GET one subject (public)
+app.get('/api/subjects/:id', optionalAuthenticate, validateIdParam, async (req, res) => {
   const { data, error } = await fetchFullSubject(req.params.id);
   if (error) return res.status(404).json({ error: 'Subject not found' });
-  res.json(withImageUrl(data));
+  res.json(present(data, req.user));
 });
 
 // POST create subject
-app.post('/api/subjects', authenticate, requireAdmin, validateSubjectBody({ partial: false }), async (req, res) => {
+app.post('/api/subjects', authenticate, validateSubjectBody({ partial: false }), async (req, res) => {
   const { item, class: scpClass, description, containment } = req.body;
 
   const { id: object_class_id, error: classError } = await getObjectClassId(scpClass);
@@ -105,7 +125,7 @@ app.post('/api/subjects', authenticate, requireAdmin, validateSubjectBody({ part
 
   const { data: subject, error: subjectError } = await supabase
     .from('subjects')
-    .insert([{ item, object_class_id, description }])
+    .insert([{ item, object_class_id, description, created_by: req.user.id }])
     .select('id')
     .single();
   if (subjectError) return sendDbError(res, subjectError);
@@ -124,11 +144,11 @@ app.post('/api/subjects', authenticate, requireAdmin, validateSubjectBody({ part
   const { data: fullSubject, error: fetchError } = await fetchFullSubject(subject.id);
   if (fetchError) return sendDbError(res, fetchError);
 
-  res.status(201).json(withImageUrl(fullSubject));
+  res.status(201).json(present(fullSubject, req.user));
 });
 
 // PUT update subject
-app.put('/api/subjects/:id', authenticate, requireAdmin, validateIdParam, validateSubjectBody({ partial: true }), async (req, res) => {
+app.put('/api/subjects/:id', authenticate, validateIdParam, requireOwnerOrAdmin, validateSubjectBody({ partial: true }), async (req, res) => {
   const { item, class: scpClass, description, containment } = req.body;
   const subjectUpdate = {};
 
@@ -173,11 +193,11 @@ app.put('/api/subjects/:id', authenticate, requireAdmin, validateIdParam, valida
   const { data: fullSubject, error: fetchError } = await fetchFullSubject(req.params.id);
   if (fetchError) return res.status(404).json({ error: 'Subject not found' });
 
-  res.json(withImageUrl(fullSubject));
+  res.json(present(fullSubject, req.user));
 });
 
 // POST upload/replace a subject's image
-app.post('/api/subjects/:id/image', authenticate, requireAdmin, validateIdParam, upload.single('image'), async (req, res) => {
+app.post('/api/subjects/:id/image', authenticate, validateIdParam, requireOwnerOrAdmin, upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No image file provided' });
 
   const { data: subject, error: subjectError } = await supabase
@@ -204,11 +224,11 @@ app.post('/api/subjects/:id/image', authenticate, requireAdmin, validateIdParam,
   const { data: fullSubject, error: fetchError } = await fetchFullSubject(req.params.id);
   if (fetchError) return sendDbError(res, fetchError);
 
-  res.json(withImageUrl(fullSubject));
+  res.json(present(fullSubject, req.user));
 });
 
 // DELETE subject
-app.delete('/api/subjects/:id', authenticate, requireAdmin, validateIdParam, async (req, res) => {
+app.delete('/api/subjects/:id', authenticate, validateIdParam, requireOwnerOrAdmin, async (req, res) => {
   const { error } = await supabase.from('subjects').delete().eq('id', req.params.id);
   if (error) return sendDbError(res, error);
   res.status(204).send();

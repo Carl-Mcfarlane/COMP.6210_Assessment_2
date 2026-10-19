@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useScpEntries } from '../data/useScpEntries.js'
-import { useAuth } from '../hooks/useAuth.js'
 import { renderRedactedText } from '../utils/renderRedactedText.jsx'
 import { getObjectClassKey } from '../utils/objectClassBadge.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
@@ -77,7 +76,6 @@ function SCPDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { entries, loading, deleteEntry } = useScpEntries()
-  const { role } = useAuth()
   const entry = !loading ? entries.find((item) => item.id === id) : undefined
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState(null)
@@ -139,7 +137,7 @@ function SCPDetail() {
         <header className="scp-detail__header">
           <h1 className="scp-detail__id">{entry.id}</h1>
           <ObjectClassBadge objectClass={entry.objectClass} />
-          {role === 'admin' && (
+          {entry.canEdit && (
             <>
               <Link to={`/scp/${entry.id}/edit`} className="scp-detail__edit">
                 Edit

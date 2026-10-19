@@ -24,7 +24,8 @@ CREATE TABLE subjects (
   object_class_id BIGINT NOT NULL REFERENCES object_classes(id),
   description TEXT,
   image TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL -- owner; NULL = admin-only
 );
 
 -- Containment procedures, separated out so they can be tracked/updated independently of the subject record

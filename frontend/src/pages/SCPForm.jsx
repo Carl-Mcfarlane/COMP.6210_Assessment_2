@@ -74,6 +74,16 @@ function SCPForm() {
     )
   }
 
+  // the API enforces this too; this just avoids showing a form that will be rejected
+  if (isEditing && !entry.canEdit) {
+    return (
+      <section className="scp-form-page">
+        <DetailHeader />
+        <p className="scp-form__status">You can only edit entries you created.</p>
+      </section>
+    )
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
     setSubmitting(true)

@@ -18,6 +18,7 @@ function mapSubjectToEntry(subject) {
   return {
     id: subject.item,
     dbId: subject.id,
+    canEdit: subject.can_edit,
     objectClass: subject.object_classes?.name,
     description: subject.description ? [subject.description] : [],
     image: subject.image,

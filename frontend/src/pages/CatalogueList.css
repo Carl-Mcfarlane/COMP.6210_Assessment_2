@@ -83,6 +83,7 @@
 /* Floats top-right of the page, in line with the logo row - the catalogue
    page doesn't share DetailHeader's nav bar, so this is its own equivalent */
 .catalogue__sign-out {
+  text-decoration: none;
   position: absolute;
   top: 24px;
   right: 16px;
