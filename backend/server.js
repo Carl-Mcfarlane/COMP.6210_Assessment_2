@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const supabase = require('./supabaseClient');
@@ -14,6 +15,7 @@ const app = express();
 // the server is exposed directly, otherwise clients could spoof their IP
 if (process.env.TRUST_PROXY) app.set('trust proxy', Number(process.env.TRUST_PROXY));
 app.use(helmet());
+app.use(compression());
 // comma-separated list of allowed frontend origins; unset means allow any (local dev)
 // each entry is reduced to its bare origin, so stray quotes, a trailing slash or
 // a pasted path (https://site.app/catalogue) still match what browsers send

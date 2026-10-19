@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 // the real client throws on import without Supabase env vars
 vi.mock('../../src/lib/supabaseClient.js', () => ({ supabase: {} }))
 
-const { mapSubjectToEntry } = await import('../../src/data/useScpEntries.js')
+const { mapSubjectToEntry } = await import('../../src/data/entriesApi.js')
 
 describe('mapSubjectToEntry', () => {
   const subject = {
