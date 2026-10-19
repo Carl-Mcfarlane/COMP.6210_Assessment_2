@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useScpEntries } from '../data/useScpEntries.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import DetailHeader from '../components/DetailHeader.jsx'
+import Skeleton from '../components/Skeleton.jsx'
 import './SCPForm.css'
 
 // fixed vocabulary, matches the object_classes lookup table
@@ -13,6 +14,39 @@ function FormStatus({ children }) {
     <section className="scp-form-page">
       <DetailHeader />
       <p className="scp-form__status">{children}</p>
+    </section>
+  )
+}
+
+// loading placeholder shaped like the real form: a label and input per field
+function FormSkeleton() {
+  const fields = [
+    { label: 96, height: 44 },
+    { label: 88, height: 44 },
+    { label: 100, height: 130 },
+    { label: 160, height: 130 },
+    { label: 56, height: 44 },
+  ]
+
+  return (
+    <section className="scp-form-page">
+      <DetailHeader />
+      <div className="scp-form" role="status" aria-label="Loading entry">
+        <Skeleton style={{ width: '90px', height: '12px', marginBottom: 12 }} />
+        <Skeleton style={{ width: '180px', height: '32px', marginBottom: 24 }} />
+
+        {fields.map((field, index) => (
+          <div key={index} style={{ marginBottom: 18 }}>
+            <Skeleton style={{ width: field.label, height: '12px', marginBottom: 8 }} />
+            <Skeleton style={{ width: '100%', height: field.height, borderRadius: 8 }} />
+          </div>
+        ))}
+
+        <div className="scp-form__actions">
+          <Skeleton style={{ width: '70px', height: '44px', borderRadius: 8 }} />
+          <Skeleton style={{ width: '130px', height: '44px', borderRadius: 8 }} />
+        </div>
+      </div>
     </section>
   )
 }
@@ -31,7 +65,7 @@ function SCPForm() {
     isEditing ? `Edit ${id} · SCP Catalogue` : 'New Entry · SCP Catalogue',
   )
 
-  if (isEditing && loading) return <FormStatus>Loading…</FormStatus>
+  if (isEditing && loading) return <FormSkeleton />
 
   if (isEditing && !entry) {
     return <FormStatus>We couldn't find an SCP entry for “{id}”.</FormStatus>

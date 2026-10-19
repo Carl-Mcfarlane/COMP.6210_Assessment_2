@@ -81,6 +81,15 @@ describe('entry form', () => {
     useAuth.mockReturnValue({ user: { id: 'u1' }, signOut: vi.fn() })
   })
 
+  it('shows a skeleton, not the form, while the entry is loading', () => {
+    useScpEntries.mockReturnValue({ entries: [], loading: true, error: null })
+    renderAt('/scp/SCP-173/edit', '/scp/:id/edit', <SCPForm />)
+
+    expect(screen.getByRole('status', { name: 'Loading entry' })).toBeInTheDocument()
+    expect(screen.queryByLabelText('Item Number')).not.toBeInTheDocument()
+    expect(screen.queryByText(/couldn't find/i)).not.toBeInTheDocument()
+  })
+
   it('refuses to open the edit form for an entry the user does not own', () => {
     mockEntries({ ...baseEntry, canEdit: false })
     renderAt('/scp/SCP-173/edit', '/scp/:id/edit', <SCPForm />)
