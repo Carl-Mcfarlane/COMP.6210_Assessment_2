@@ -66,39 +66,36 @@ export function useScpEntries() {
     }
   }, [])
 
-  async function deleteEntry(dbId) {
-    const response = await fetch(`${API_BASE_URL}/api/subjects/${dbId}`, {
-      method: 'DELETE',
-      headers: await authHeaders(),
+  // one place for auth headers, JSON bodies and error parsing
+  async function request(path, { method, json, body, fallback }) {
+    const headers = await authHeaders()
+    if (json !== undefined) headers['Content-Type'] = 'application/json'
+    const response = await fetch(`${API_BASE_URL}/api/subjects${path}`, {
+      method,
+      headers,
+      body: json !== undefined ? JSON.stringify(json) : body,
     })
-    if (!response.ok) throw new Error(`Failed to delete subject (${response.status})`)
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}))
+      throw new Error(errorBody.error ?? `${fallback} (${response.status})`)
+    }
+    return response
+  }
+
+  async function deleteEntry(dbId) {
+    await request(`/${dbId}`, { method: 'DELETE', fallback: 'Failed to delete subject' })
     setEntries((current) => current.filter((entry) => entry.dbId !== dbId))
   }
 
-  async function parseError(response, fallback) {
-    const body = await response.json().catch(() => ({}))
-    return new Error(body.error ?? fallback)
-  }
-
   async function createEntry(payload) {
-    const response = await fetch(`${API_BASE_URL}/api/subjects`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-      body: JSON.stringify(payload),
-    })
-    if (!response.ok) throw await parseError(response, `Failed to create subject (${response.status})`)
+    const response = await request('', { method: 'POST', json: payload, fallback: 'Failed to create subject' })
     const entry = mapSubjectToEntry(await response.json())
     setEntries((current) => [...current, entry])
     return entry
   }
 
   async function updateEntry(dbId, payload) {
-    const response = await fetch(`${API_BASE_URL}/api/subjects/${dbId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-      body: JSON.stringify(payload),
-    })
-    if (!response.ok) throw await parseError(response, `Failed to update subject (${response.status})`)
+    const response = await request(`/${dbId}`, { method: 'PUT', json: payload, fallback: 'Failed to update subject' })
     const entry = mapSubjectToEntry(await response.json())
     setEntries((current) => current.map((item) => (item.dbId === dbId ? entry : item)))
     return entry
@@ -109,12 +106,7 @@ export function useScpEntries() {
     formData.append('image', file)
     // no Content-Type header - the browser sets multipart/form-data with
     // the right boundary itself once it sees a FormData body
-    const response = await fetch(`${API_BASE_URL}/api/subjects/${dbId}/image`, {
-      method: 'POST',
-      headers: await authHeaders(),
-      body: formData,
-    })
-    if (!response.ok) throw await parseError(response, `Failed to upload image (${response.status})`)
+    const response = await request(`/${dbId}/image`, { method: 'POST', body: formData, fallback: 'Failed to upload image' })
     const entry = mapSubjectToEntry(await response.json())
     setEntries((current) => current.map((item) => (item.dbId === dbId ? entry : item)))
     return entry
