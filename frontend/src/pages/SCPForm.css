@@ -1,5 +1,9 @@
-/* Reading-width column, matching the detail page's layout */
+/* Reading-width column, matching the detail page's layout. #root is a flex
+   column and auto margins stop children stretching, so without an explicit
+   width the page shrinks to fit its (short) inputs instead of filling 68ch;
+   the 32px is the page's own side padding */
 .scp-form-page {
+  width: calc(100% - 32px);
   max-width: 68ch;
   margin: 0 auto;
   padding: 88px 16px 64px;
