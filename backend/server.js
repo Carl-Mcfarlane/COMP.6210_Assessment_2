@@ -83,8 +83,8 @@ async function requireOwnerOrAdmin(req, res, next) {
 // log the real database error server-side but only send the client a generic
 // message, so table/column details never leak out
 function sendDbError(res, error) {
-  console.error(error);
   if (error.code === '23505') return res.status(409).json({ error: 'A subject with that item number already exists' });
+  console.error(error);
   res.status(500).json({ error: 'Database error' });
 }
 

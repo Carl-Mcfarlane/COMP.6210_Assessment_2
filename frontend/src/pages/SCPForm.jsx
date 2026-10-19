@@ -8,81 +8,76 @@ import './SCPForm.css'
 // fixed vocabulary, matches the object_classes lookup table
 const OBJECT_CLASSES = ['Safe', 'Euclid', 'Keter']
 
+function FormStatus({ children }) {
+  return (
+    <section className="scp-form-page">
+      <DetailHeader />
+      <p className="scp-form__status">{children}</p>
+    </section>
+  )
+}
+
 // shared by both /scp/new and /scp/:id/edit - editing vs creating only
-// changes how the fields are pre-filled and which request gets sent
+// changes how the fields are pre-filled and which request gets sent. This
+// outer component waits for the entry to load, then hands it to the form
+// below so the fields can start with the right values
 function SCPForm() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const isEditing = Boolean(id)
   const { entries, loading, createEntry, updateEntry, uploadImage } = useScpEntries()
   const entry = isEditing ? entries.find((item) => item.id === id) : undefined
-
-  const [item, setItem] = useState('')
-  const [objectClass, setObjectClass] = useState(OBJECT_CLASSES[0])
-  const [description, setDescription] = useState('')
-  const [containment, setContainment] = useState('')
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [hydrated, setHydrated] = useState(!isEditing)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState(null)
 
   useDocumentTitle(
     isEditing ? `Edit ${id} · SCP Catalogue` : 'New Entry · SCP Catalogue',
   )
 
-  // fill the form once the entry has loaded (only runs the first time it
-  // becomes available, so it doesn't stomp on what the user is typing)
-  useEffect(() => {
-    if (!isEditing || hydrated || !entry) return
-    setItem(entry.id)
-    setObjectClass(entry.objectClass ?? OBJECT_CLASSES[0])
-    setDescription(entry.description?.join('\n\n') ?? '')
-    setContainment(entry.containmentProcedures?.join('\n\n') ?? '')
-    setImagePreview(entry.image ?? null)
-    setHydrated(true)
-  }, [isEditing, entry, hydrated])
-
-  // swap in a local preview of the picked file; revoke it on cleanup/change
-  // so we don't leak object URLs as the user picks different files
-  function handleFileChange(event) {
-    const file = event.target.files[0] ?? null
-    setImageFile(file)
-    setImagePreview((current) => {
-      if (current?.startsWith('blob:')) URL.revokeObjectURL(current)
-      return file ? URL.createObjectURL(file) : (entry?.image ?? null)
-    })
-  }
-
-  if (isEditing && loading) {
-    return (
-      <section className="scp-form-page">
-        <DetailHeader />
-        <p className="scp-form__status">Loading…</p>
-      </section>
-    )
-  }
+  if (isEditing && loading) return <FormStatus>Loading…</FormStatus>
 
   if (isEditing && !entry) {
-    return (
-      <section className="scp-form-page">
-        <DetailHeader />
-        <p className="scp-form__status">
-          We couldn't find an SCP entry for “{id}”.
-        </p>
-      </section>
-    )
+    return <FormStatus>We couldn't find an SCP entry for “{id}”.</FormStatus>
   }
 
   // the API enforces this too; this just avoids showing a form that will be rejected
   if (isEditing && !entry.canEdit) {
-    return (
-      <section className="scp-form-page">
-        <DetailHeader />
-        <p className="scp-form__status">You can only edit entries you created.</p>
-      </section>
-    )
+    return <FormStatus>You can only edit entries you created.</FormStatus>
   }
+
+  return (
+    <SCPFormFields
+      entry={entry}
+      createEntry={createEntry}
+      updateEntry={updateEntry}
+      uploadImage={uploadImage}
+    />
+  )
+}
+
+// the actual form; only mounted once `entry` is known (or when creating), so
+// the initial field values come straight from it rather than an effect
+function SCPFormFields({ entry, createEntry, updateEntry, uploadImage }) {
+  const navigate = useNavigate()
+  const isEditing = Boolean(entry)
+
+  const [item, setItem] = useState(entry?.id ?? '')
+  const [objectClass, setObjectClass] = useState(entry?.objectClass ?? OBJECT_CLASSES[0])
+  const [description, setDescription] = useState(entry?.description?.join('\n\n') ?? '')
+  const [containment, setContainment] = useState(entry?.containmentProcedures?.join('\n\n') ?? '')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(entry?.image ?? null)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState(null)
+
+  // swap in a local preview of the picked file; the effect below revokes the
+  // previous blob URL so we don't leak object URLs as the user picks files
+  function handleFileChange(event) {
+    const file = event.target.files[0] ?? null
+    setImageFile(file)
+    setImagePreview(file ? URL.createObjectURL(file) : (entry?.image ?? null))
+  }
+
+  useEffect(() => () => {
+    if (imagePreview?.startsWith('blob:')) URL.revokeObjectURL(imagePreview)
+  }, [imagePreview])
 
   async function handleSubmit(event) {
     event.preventDefault()

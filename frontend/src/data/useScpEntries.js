@@ -14,7 +14,7 @@ async function authHeaders() {
 
 // backend returns subjects shaped for the DB (item, object_classes, containment_procedures);
 // the pages expect the older "entry" shape (id, objectClass, paragraph arrays), so map here
-function mapSubjectToEntry(subject) {
+export function mapSubjectToEntry(subject) {
   return {
     id: subject.item,
     dbId: subject.id,
