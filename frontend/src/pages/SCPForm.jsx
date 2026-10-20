@@ -13,7 +13,7 @@ function FormStatus({ children }) {
   return (
     <section className="scp-form-page">
       <DetailHeader />
-      <p className="scp-form__status">{children}</p>
+      <p className="scp-form__status scp-form__status--centered">{children}</p>
     </section>
   )
 }

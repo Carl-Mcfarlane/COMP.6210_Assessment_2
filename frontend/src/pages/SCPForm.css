@@ -15,6 +15,11 @@
   color: var(--text);
 }
 
+/* standalone messages (not found, can't edit) sit in the middle of the page */
+.scp-form-page .scp-form__status--centered {
+  text-align: center;
+}
+
 /* Login/Signup are short 2-field forms, not the long reading-width layout
    above (that's sized for the SCP edit form's textareas) - a fixed, narrower
    width keeps both auth pages the same size regardless of title/button text */
