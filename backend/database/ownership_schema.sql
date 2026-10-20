@@ -1,6 +1,6 @@
--- Run once in the Supabase SQL editor (after auth_schema.sql).
--- Records who created each subject so non-admin users can edit/delete only
--- their own entries. Existing rows get NULL, which means "admin only".
+-- Run once in the Supabase SQL editor, after auth_schema.sql.
+-- Adds created_by so users can only edit/delete their own entries.
+-- Existing rows stay NULL, so only admins can change those.
 ALTER TABLE subjects
   ADD COLUMN IF NOT EXISTS created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL;
 

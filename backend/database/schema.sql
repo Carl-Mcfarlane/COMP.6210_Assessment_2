@@ -1,11 +1,11 @@
--- Reset (drop in FK-dependency order so this file can be rerun cleanly)
+-- Drop everything first (child tables before parents) so this can be re-run
 DROP TABLE IF EXISTS appendices CASCADE;
 DROP TABLE IF EXISTS incident_logs CASCADE;
 DROP TABLE IF EXISTS containment_procedures CASCADE;
 DROP TABLE IF EXISTS subjects CASCADE;
 DROP TABLE IF EXISTS object_classes CASCADE;
 
--- Lookup table for SCP object classes (fixed vocabulary, so it's a table not a free-text column)
+-- Object classes (Safe/Euclid/Keter). Its own table since it's a fixed list
 CREATE TABLE object_classes (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
@@ -17,7 +17,7 @@ INSERT INTO object_classes (name, description) VALUES
 ('Euclid', 'Requires more resources or monitoring; behavior is not fully understood or predictable.'),
 ('Keter', 'Difficult to contain consistently and poses a significant risk even under active containment.');
 
--- Core subjects table
+-- Main subjects table
 CREATE TABLE subjects (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   item TEXT NOT NULL UNIQUE,
@@ -25,10 +25,10 @@ CREATE TABLE subjects (
   description TEXT,
   image TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL -- owner; NULL = admin-only
+  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL -- who created it, NULL means admin only
 );
 
--- Containment procedures, separated out so they can be tracked/updated independently of the subject record
+-- Containment procedures, kept separate so they can be updated on their own
 CREATE TABLE containment_procedures (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   subject_id BIGINT NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
@@ -36,9 +36,8 @@ CREATE TABLE containment_procedures (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Chronological incident/history log entries for a subject. log_date is TEXT
--- rather than DATE since in-universe dates are frequently partially redacted
--- (e.g. "██/██/20██"); sort_order guarantees display order regardless.
+-- Incident log entries for each subject. log_date is text because the dates
+-- are often redacted (e.g. "██/██/20██"), sort_order keeps them in order
 CREATE TABLE incident_logs (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   subject_id BIGINT NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
@@ -47,8 +46,7 @@ CREATE TABLE incident_logs (
   sort_order INTEGER NOT NULL DEFAULT 0
 );
 
--- Lettered/numbered sub-documents attached to a subject (Appendix A, Addendum
--- 003-01, etc): a heading plus a body, rendered as collapsible extra sections
+-- Appendices/addenda for a subject (heading + body), shown as collapsible sections
 CREATE TABLE appendices (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   subject_id BIGINT NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
@@ -57,7 +55,7 @@ CREATE TABLE appendices (
   sort_order INTEGER NOT NULL DEFAULT 0
 );
 
--- Seed subjects
+-- Seed data: subjects
 INSERT INTO subjects (item, object_class_id, description, image) VALUES
 ('SCP-002', (SELECT id FROM object_classes WHERE name = 'Euclid'), 'A fleshy, tumorous mass roughly 60 cubic metres in volume, with an iron hatch leading into what resembles a small, furnished apartment. The furnishings appear to be grown from organic material, and the space has periodically drawn living subjects inside, none of whom are seen again.', 'SCP-002.jpg'),
 ('SCP-003', (SELECT id FROM object_classes WHERE name = 'Euclid'), 'A pair of linked anomalous objects: a dense, fibrous mass resembling circuitry grown from biological material, mounted on an inscribed stone tablet that regulates it. Kept below a critical temperature, the mass is inert; if it warms, it begins converting nearby matter as it grows.', NULL),
@@ -84,7 +82,7 @@ INSERT INTO subjects (item, object_class_id, description, image) VALUES
 ('SCP-1048', (SELECT id FROM object_classes WHERE name = 'Euclid'), 'A stuffed toy bear capable of independent movement when unobserved. It periodically constructs smaller bear-like figures from nearby available materials, which exhibit similar low-level animate behavior and a strong territorial attachment to the subject.', NULL),
 ('SCP-1471', (SELECT id FROM object_classes WHERE name = 'Euclid'), 'A discontinued mobile application that overlays a humanoid figure onto the user''s camera feed. The figure gradually becomes more responsive and independent the longer the application remains installed, in some cases persisting after the application has been deleted.', NULL);
 
--- Seed containment procedures
+-- Seed data: containment procedures
 INSERT INTO containment_procedures (subject_id, procedure_text) VALUES
 ((SELECT id FROM subjects WHERE item = 'SCP-002'), 'Teams of at least two personnel are required within 20 metres of the containment area at all times, maintaining physical contact with one another to confirm each other''s presence. Access below Level 3 clearance is not permitted without written authorization from two Level 4 administrators.'),
 ((SELECT id FROM subjects WHERE item = 'SCP-003'), 'Containment temperature must be held at or above 35°C to keep the mass inert; portable heating equipment is to be kept on hand in case of power failure. No living organism of significant biological complexity may be brought into contact with the object without prior authorization.'),
@@ -112,7 +110,7 @@ Level 1 clearance is required for basic access to SCP-004-1; Level 4 clearance i
 ((SELECT id FROM subjects WHERE item = 'SCP-1048'), 'Housed in a padded containment room with limited loose material and continuous camera monitoring. Any constructed figures are to be catalogued and separated promptly.'),
 ((SELECT id FROM subjects WHERE item = 'SCP-1471'), 'Distribution of the application is restricted, and copies are held only on isolated devices with no network connectivity. Installation on any networked device is strictly forbidden pending further study.');
 
--- Seed incident/history logs
+-- Seed data: incident logs
 INSERT INTO incident_logs (subject_id, log_date, entry_text, sort_order) VALUES
 ((SELECT id FROM subjects WHERE item = 'SCP-002'), '██/██/19██', 'The object was recovered after a series of disappearances near its original discovery site; three individuals sent inside during initial testing did not return.', 1),
 ((SELECT id FROM subjects WHERE item = 'SCP-002'), '██/██/20██', 'Since relocation, the interior has continued to acquire new furnishings at a slow, steady rate despite no further test subjects being introduced.', 2),
@@ -177,7 +175,7 @@ INSERT INTO incident_logs (subject_id, log_date, entry_text, sort_order) VALUES
 ((SELECT id FROM subjects WHERE item = 'SCP-1471'), '██/██/20██', 'A test device retained visual traces of the overlaid figure for several days after the application was uninstalled, gradually fading over the following week.', 1),
 ((SELECT id FROM subjects WHERE item = 'SCP-1471'), '██/██/20██', 'The figure was observed appearing to react to events occurring outside the camera''s field of view on a test device, prompting a review of the subject''s containment protocols.', 2);
 
--- Seed appendices (Appendix/Addendum-style sub-documents)
+-- Seed data: appendices
 INSERT INTO appendices (subject_id, heading, body, sort_order) VALUES
 ((SELECT id FROM subjects WHERE item = 'SCP-003'), 'Addendum 003-01', 'Analysis of the tablet''s inscriptions suggests it was constructed specifically to regulate the biological mass, rather than simply store it. Its point of origin and the identity of its makers remain unknown.', 1),
 ((SELECT id FROM subjects WHERE item = 'SCP-003'), 'Addendum 003-02', 'A controlled warming test allowed the mass to briefly enter its growth phase under observation. Growth halted immediately once the temperature was returned to baseline, with no lasting change to the mass or the tablet.', 2),
