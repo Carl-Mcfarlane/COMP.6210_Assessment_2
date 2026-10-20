@@ -19,14 +19,25 @@ function Home() {
     >
       <div className="home__overlay" aria-hidden="true" />
 
-      {user && (
-        <div className="home__account">
-          <span className="home__email">{user.email}</span>
-          <button type="button" className="home__sign-out" onClick={signOut}>
-            Sign Out
-          </button>
-        </div>
-      )}
+      <div className="home__account">
+        {user ? (
+          <>
+            <span className="home__email">{user.email}</span>
+            <button type="button" className="home__sign-out" onClick={signOut}>
+              Sign Out
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="home__sign-out">
+              Sign In
+            </Link>
+            <Link to="/signup" className="home__sign-out home__sign-out--primary">
+              Sign Up
+            </Link>
+          </>
+        )}
+      </div>
 
       <div className="home__content">
         <img src={logo} alt="SCP Foundation" className="home__logo" />
@@ -39,23 +50,9 @@ function Home() {
         {!loading && !error && (
           <p className="home__count">{entries.length} entries on file</p>
         )}
-        {user ? (
-          <Link to="/catalogue" className="home__cta">
-            Browse Catalogue
-          </Link>
-        ) : (
-          <div className="home__auth-links">
-            <Link to="/catalogue" className="home__cta">
-              Browse Catalogue
-            </Link>
-            <Link to="/login" className="home__cta home__cta--secondary">
-              Sign In
-            </Link>
-            <Link to="/signup" className="home__cta home__cta--secondary">
-              Create Account
-            </Link>
-          </div>
-        )}
+        <Link to="/catalogue" className="home__cta">
+          Browse Catalogue
+        </Link>
       </div>
     </section>
   )

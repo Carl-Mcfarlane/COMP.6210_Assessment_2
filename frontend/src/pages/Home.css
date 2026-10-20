@@ -26,8 +26,9 @@
   background: rgba(0, 0, 0, 0.6);
 }
 
-/* Signed-in indicator, top-right of the hero - Home has no DetailHeader of
-   its own to carry this, so it gets its own small corner control */
+/* Account controls, top-right of the hero (email + sign out when signed in,
+   Sign In / Sign Up otherwise) - Home has no DetailHeader of its own to
+   carry these, so they get their own small corner control */
 .home__account {
   position: absolute;
   top: 16px;
@@ -54,6 +55,9 @@
 }
 
 .home__sign-out {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   flex-shrink: 0;
   min-height: 32px;
   padding: 0 12px;
@@ -73,6 +77,19 @@
 .home__sign-out:focus-visible {
   background: rgba(244, 244, 245, 0.12);
   outline: none;
+}
+
+/* Sign Up stands out from Sign In, same accent as the main CTA */
+.home__sign-out--primary {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.home__sign-out--primary:hover,
+.home__sign-out--primary:focus-visible {
+  background: var(--accent);
+  filter: brightness(1.08);
 }
 
 @media (max-width: 480px) {
@@ -155,24 +172,6 @@
 .home__cta:focus-visible {
   filter: brightness(1.08);
   outline: none;
-}
-
-/* Signed-out visitors get Sign In + Create Account side by side instead
-   of a single "Browse Catalogue" button */
-.home__auth-links {
-  display: flex;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.home__auth-links .home__cta {
-  margin-top: 0;
-}
-
-.home__cta--secondary {
-  color: #f4f4f5;
-  background: transparent;
-  border: 1px solid #f4f4f5;
 }
 
 /* Shrink the hero and its contents to fit smaller phone screens */
