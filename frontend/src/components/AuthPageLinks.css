@@ -1,0 +1,28 @@
+/* Two quiet text links under the auth card: back on the left, guest
+   browsing on the right */
+.auth-page-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.auth-page-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.auth-page-links a:hover,
+.auth-page-links a:focus-visible {
+  color: var(--text-h);
+  text-decoration: underline;
+  outline: none;
+}

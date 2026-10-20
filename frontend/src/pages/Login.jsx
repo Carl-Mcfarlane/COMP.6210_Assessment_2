@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import logo from '../assets/images/SCP_Foundation_Logo_White.png'
+import AuthPageLinks from '../components/AuthPageLinks.jsx'
 import './SCPForm.css'
 
 function Login() {
@@ -74,6 +75,8 @@ function Login() {
           </button>
         </div>
       </form>
+
+      <AuthPageLinks />
     </section>
   )
 }
