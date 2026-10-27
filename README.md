@@ -10,6 +10,11 @@ You'll need Node and a Supabase project.
 
 **Database:** run the files in `backend/database/` in the Supabase SQL editor, in this order: `schema.sql`, `auth_schema.sql`, `ownership_schema.sql`, `rls_schema.sql`. Heads up, `schema.sql` drops the tables first so don't run it on data you care about.
 
+## Live links
+Live app: https://comp-6210-assessment-2.vercel.app
+API: https://comp6210assessment2-production.up.railway.app/api/subjects
+Trello: https://trello.com/b/XdT5sIx1/scp-react-api-project
+
 **Backend:**
 
 ```bash
