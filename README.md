@@ -1,8 +1,14 @@
 # SCP Catalogue
 
-My Assessment 2 project for Web Services / Design Methodologies. It's a catalogue of SCP Foundation entries where anyone can browse and search, and if you make an account you can add your own entries and edit or delete them.
+My COMP.6210 Assessment 2 project for Web Services / Design Methodologies. It's a catalogue of SCP Foundation entries where anyone can browse and search, and if you make an account you can add your own entries and edit or delete them.
 
 React frontend, Express API, and Supabase for the database, auth and image storage.
+
+## Live links
+
+- [Live app](https://comp-6210-assessment-2.vercel.app)
+- [API](https://comp6210assessment2-production.up.railway.app/api/subjects)
+- [Trello board](https://trello.com/b/XdT5sIx1/scp-react-api-project)
 
 ## Running it
 
@@ -10,16 +16,11 @@ You'll need Node and a Supabase project.
 
 **Database:** run the files in `backend/database/` in the Supabase SQL editor, in this order: `schema.sql`, `auth_schema.sql`, `ownership_schema.sql`, `rls_schema.sql`. Heads up, `schema.sql` drops the tables first so don't run it on data you care about.
 
-## Live links
-Live app: https://comp-6210-assessment-2.vercel.app
-API: https://comp6210assessment2-production.up.railway.app/api/subjects
-Trello: https://trello.com/b/XdT5sIx1/scp-react-api-project
-
 **Backend:**
 
 ```bash
 cd backend
-cp .env.example .env    
+cp .env.example .env    # Supabase URL + service key, CORS origin
 npm install
 npm run dev             # runs on :5000
 ```
@@ -60,3 +61,5 @@ cd frontend && npm test
 ```
 
 Backend tests cover the API routes, permissions and validation, using a fake Supabase client so they don't touch the real database.
+
+Frontend tests check search, route protection and that Edit and Delete only show for owners.
