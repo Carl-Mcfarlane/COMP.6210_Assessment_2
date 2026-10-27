@@ -62,7 +62,7 @@ function SCPForm() {
   const entry = isEditing ? entries.find((item) => item.id === id) : undefined
 
   useDocumentTitle(
-    isEditing ? `Edit ${id} · SCP Catalogue` : 'New Entry · SCP Catalogue',
+    isEditing ? `Edit ${id} · SCP Foundation` : 'New Entry · SCP Foundation',
   )
 
   if (isEditing && loading) return <FormSkeleton />

@@ -5,7 +5,7 @@ import './SCPDetail.css'
 
 // catch-all route for any url that doesn't match, e.g. a typo or a bad link
 function NotFound() {
-  useDocumentTitle('Page Not Found · SCP Catalogue')
+  useDocumentTitle('Page Not Found · SCP Foundation')
 
   return (
     <section className="scp-detail">

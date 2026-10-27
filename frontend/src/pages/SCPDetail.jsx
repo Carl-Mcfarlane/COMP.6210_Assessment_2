@@ -95,10 +95,10 @@ function SCPDetail() {
 
   useDocumentTitle(
     loading
-      ? 'Loading… · SCP Catalogue'
+      ? 'Loading… · SCP Foundation'
       : entry
-        ? `${entry.id} · SCP Catalogue`
-        : `${id} Not Found · SCP Catalogue`,
+        ? `${entry.id} · SCP Foundation`
+        : `${id} Not Found · SCP Foundation`,
   )
 
   if (loading) {

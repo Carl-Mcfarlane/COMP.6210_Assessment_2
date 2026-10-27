@@ -31,7 +31,7 @@ function CardSkeleton() {
 
 // main browse page - search bar plus the grid of cards
 function CatalogueList() {
-  useDocumentTitle('SCP Catalogue')
+  useDocumentTitle('Catalogue · SCP Foundation')
   const { entries, loading } = useScpEntries()
   const { user, signOut } = useAuth()
   const [searchParams] = useSearchParams()

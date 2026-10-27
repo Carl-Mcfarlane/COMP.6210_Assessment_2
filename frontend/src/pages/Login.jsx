@@ -7,7 +7,7 @@ import AuthPageLinks from '../components/AuthPageLinks.jsx'
 import './SCPForm.css'
 
 function Login() {
-  useDocumentTitle('Sign In · SCP Catalogue')
+  useDocumentTitle('Sign In · SCP Foundation')
   const { signIn } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
